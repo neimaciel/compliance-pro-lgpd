@@ -1,0 +1,31 @@
+{
+  "name": "@compliance-pro/lgpd",
+  "version": "1.0.0",
+  "description": "Compliance Pro LGPD — TypeScript audit scripts (cookie checker, TLS checker, dependency scanner)",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "cookie-check": "./dist/cookie-checker.js",
+    "tls-check": "./dist/tls-checker.js",
+    "dep-scan": "./dist/dependency-scanner.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "scan": "tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "chalk": "^5.3.0",
+    "playwright": "^1.45.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}

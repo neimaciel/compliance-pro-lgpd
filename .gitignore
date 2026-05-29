@@ -1,0 +1,75 @@
+## Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+## Virtual envs
+.venv/
+venv/
+env/
+ENV/
+
+## Testing
+.pytest_cache/
+.coverage
+.coverage.*
+.cache
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+## Node
+node_modules/
+dist/
+*.tsbuildinfo
+.npm
+.next/
+.nuxt/
+
+## IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+## Evidence (runtime, not source)
+evidence/log.jsonl
+evidence/log.*.jsonl.gz
+evidence/anchors/
+
+## Secrets / local config
+.env
+.env.*
+!.env.example
+*.local
+secrets/
+*.pem
+*.key
+!**/test/**/*.pem
+
+## Reports (runtime output)
+*-report.json
+reports/
+
+## OS
+Thumbs.db
+.DS_Store

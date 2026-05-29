@@ -1,0 +1,206 @@
+# ROPA — Registro de Operações de Tratamento (Art. 37 LGPD)
+# Template em YAML versionável em Git. Uma entrada por atividade de tratamento.
+# Edite, remova campos não aplicáveis, adicione livre conforme necessidade.
+
+# ============================================================
+# Cabeçalho do documento (uma vez por organização)
+# ============================================================
+organizacao:
+  razao_social: "{{RAZAO_SOCIAL}}"
+  nome_fantasia: "{{NOME_FANTASIA}}"
+  cnpj: "{{CNPJ}}"
+  endereco: "{{ENDERECO}}"
+  porte: "{{PORTE}}"  # microempresa | pequena | media | grande
+  setor: "{{SETOR}}"  # saúde | educação | financeiro | varejo | tecnologia | etc.
+  encarregado:
+    nome: "{{NOME_DPO}}"
+    email: "{{EMAIL_DPO}}"
+    telefone: "{{TELEFONE_DPO}}"
+    indicacao_publica: "{{URL_INDICACAO_DPO}}"
+  papel:
+    controlador: true
+    operador: false   # marque true se também atua como operador para terceiros
+
+# ============================================================
+# Inventário de atividades de tratamento
+# ============================================================
+atividades:
+
+  # ------------------------------------------------------------
+  - id: "TRAT-2026-0001"
+    nome: "Onboarding de cliente PF"
+    versao: "1.0"
+    ultima_revisao: "2026-05-28"
+    proxima_revisao: "2027-05-28"
+    status: "ativo"   # ativo | suspenso | descontinuado
+
+    finalidade:
+      primaria: "Cadastro, ativação de conta e prestação do serviço contratado"
+      secundarias: []
+      especifica: true
+      explicita: true
+
+    base_legal:
+      hipotese: "Art. 7, V"  # execução de contrato
+      descricao_hipotese: "Execução de contrato ou procedimentos preliminares relacionados a contrato do qual o titular é parte"
+      justificativa: "Necessário para celebrar e cumprir o contrato com o cliente"
+      lia_documento: null  # preencher se for Art. 7, IX (legítimo interesse)
+
+    titulares:
+      categorias:
+        - "Clientes pessoa física"
+      vulneraveis:
+        criancas: false
+        adolescentes: false
+        idosos: true   # se aplicável
+        outros: []
+
+    dados:
+      categorias_simples:
+        - tipo: "identificacao"
+          campos: ["nome", "cpf", "rg", "data_nascimento"]
+        - tipo: "contato"
+          campos: ["email", "telefone", "endereco"]
+        - tipo: "contratual"
+          campos: ["dados_bancarios", "historico_compras"]
+      categorias_sensiveis: []  # se houver: ["saude", "biometria", etc.]
+      origem:
+        - "Coleta direta do titular (formulário web)"
+      volume_estimado: "~5.000 novos cadastros/mês"
+      retencao_no_sistema: "Vida do vínculo + 5 anos"
+
+    operacoes:
+      coleta:
+        canal: "Formulário web /signup"
+        tls: "TLS 1.3"
+      armazenamento:
+        sistema: "PostgreSQL 16"
+        regiao: "AWS sa-east-1"
+        criptografia_at_rest: "AES-256 (KMS)"
+      uso:
+        - "Criação de conta"
+        - "Comunicação operacional"
+      compartilhamento_interno:
+        - area: "atendimento"
+          motivo: "suporte ao cliente"
+        - area: "financeiro"
+          motivo: "cobrança"
+      compartilhamento_externo:
+        - parte: "Stripe"
+          finalidade: "processamento de pagamento"
+          base_legal: "Art. 7, V"
+          dpa: "DPA-2025-0042"
+      eliminacao:
+        gatilho: "5 anos após encerramento do vínculo"
+        metodo: "Hard delete + log de auditoria"
+        retencao_pos_eliminacao: "0 (apenas evidência de eliminação)"
+
+    operadores:
+      - razao_social: "Stripe Payments Brasil Ltda"
+        cnpj: "{{CNPJ_STRIPE_BR}}"
+        finalidade: "Processamento de pagamento"
+        dpa_assinado: true
+        dpa_data: "2025-08-10"
+        scc_internacional: false
+        sub_operadores_autorizados: ["AWS US-East-1"]
+
+    transferencia_internacional:
+      ocorre: false
+      # se true:
+      # destinos:
+      #   - pais: "EUA"
+      #     operador: "Sentry.io"
+      #     mecanismo: "scc_anpd"
+      #     tia_documento: "TIA-2026-0003"
+      #     medidas_suplementares: ["pseudonimização antes do envio"]
+
+    medidas_seguranca:
+      tecnicas:
+        - "Criptografia AES-256 em repouso"
+        - "TLS 1.3 em trânsito"
+        - "RBAC com mínimo privilégio"
+        - "MFA obrigatório para colaboradores"
+        - "Logs imutáveis (write-only)"
+        - "Backup criptografado diário"
+      organizacionais:
+        - "NDA + cláusula de privacidade nos contratos"
+        - "Treinamento LGPD anual"
+        - "Política de mesa limpa"
+        - "Processo de off-boarding com revogação de acessos"
+
+    decisao_automatizada:
+      ocorre: false
+      # se true:
+      # descricao: ""
+      # afeta_significativamente_titular: false
+      # intervencao_humana: ""
+      # explicabilidade_disponivel: true
+      # workflow: "workflows/adm-decisions-art20.md"
+
+    direitos_titular:
+      canal_solicitacao: "dpo@empresa.com + form em /privacidade"
+      prazo: "15 dias (Art. 19)"
+      processo: "workflows/dsar-direitos-titular.md"
+
+    risco_avaliado:
+      ripd_realizado: false
+      ripd_documento: null
+      score_risco: "baixo"   # baixo | medio | alto | critico
+      ultima_avaliacao: "2026-05-28"
+
+    incidentes_historicos: []
+
+    observacoes: |
+      Atividade cobre signup + onboarding até a primeira transação.
+      Atividades subsequentes (operação, atendimento) têm registros próprios.
+
+  # ------------------------------------------------------------
+  - id: "TRAT-2026-0002"
+    nome: "Comunicação de marketing via email"
+    versao: "1.0"
+    status: "ativo"
+    finalidade:
+      primaria: "Envio de newsletters, ofertas e conteúdo promocional"
+    base_legal:
+      hipotese: "Art. 7, I"  # consentimento
+      justificativa: "Consentimento específico para finalidade de marketing"
+    titulares:
+      categorias: ["leads", "clientes ativos", "clientes inativos"]
+    dados:
+      categorias_simples:
+        - tipo: "contato"
+          campos: ["email", "nome", "preferencias_de_comunicacao"]
+    operacoes:
+      armazenamento:
+        sistema: "MailerLite"
+        regiao: "EU + EUA (CDN)"
+      eliminacao:
+        gatilho: "Revogação de consentimento OU 24 meses de inatividade"
+    transferencia_internacional:
+      ocorre: true
+      destinos:
+        - pais: "EUA"
+          operador: "MailerLite (sub-operador SendGrid)"
+          mecanismo: "scc_anpd"
+          tia_documento: "TIA-2026-0001"
+    direitos_titular:
+      canal_revogacao: "Link de descadastro em todo email + form em /privacidade"
+    observacoes: |
+      Ledger de consentimento em tabela consent_ledger.
+      Propagação de revogação <24h para MailerLite via API.
+
+  # ------------------------------------------------------------
+  # Adicione tantas atividades quantas necessárias...
+  # Use o gerador automatizado: scripts/python/ropa-generator.py
+
+# ============================================================
+# Metadados do documento
+# ============================================================
+metadados_documento:
+  data_criacao: "2026-05-28"
+  ultima_atualizacao: "2026-05-28"
+  versao_documento: "1.0"
+  aprovado_por: "{{NOME_DPO}}"
+  ciclo_revisao: "anual + a cada nova atividade"
+  formato_distribuicao_anpd: "PDF gerado a partir deste YAML + planilha sintética"
+  ferramenta_geracao: "compliance-pro-lgpd"

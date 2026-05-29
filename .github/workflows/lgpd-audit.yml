@@ -1,0 +1,70 @@
+name: LGPD Audit
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  schedule:
+    - cron: "0 9 * * 1"   # Segunda-feira 9h UTC — auditoria semanal
+
+jobs:
+  pii-scan:
+    name: PII Scanner
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: |
+          cd scripts/python
+          pip install -e .
+      - name: Run scan
+        run: pii-scan --target . --report pii-report.json --fail-on critical
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pii-report
+          path: pii-report.json
+
+  dependency-scan:
+    name: Dependency Scanner
+    runs-on: ubuntu-latest
+    if: hashFiles('package.json') != ''
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install
+        run: |
+          cd scripts/typescript
+          npm install
+      - name: Run scan
+        run: |
+          cd scripts/typescript
+          npx tsx src/dependency-scanner.ts --pkg ../../package.json --report dep-report.json
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dep-report
+          path: scripts/typescript/dep-report.json
+
+  evidence-integrity:
+    name: Evidence Chain Integrity
+    runs-on: ubuntu-latest
+    if: hashFiles('evidence/log.jsonl') != ''
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: |
+          cd scripts/python
+          pip install -e .
+      - name: Verify chain
+        run: audit-integrity verify --file evidence/log.jsonl

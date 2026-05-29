@@ -1,0 +1,11 @@
+# Diretório de evidência hash-chained.
+#
+# O arquivo evidence/log.jsonl é criado em runtime pela skill ou pelos scripts.
+# Em produção, este diretório deve estar montado em storage append-only (S3 Object Lock).
+#
+# Estrutura esperada:
+#   log.jsonl                  — append-only atual
+#   log.YYYY-Q?.jsonl.gz       — rotacionado por trimestre
+#   anchors/                   — ancoragens diárias em storage imutável externo
+#
+# Ver manifest.md para schema completo.
