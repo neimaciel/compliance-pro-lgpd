@@ -1,7 +1,7 @@
 # Workflow — DSAR (Direitos do Titular)
 
 > **Pedido do titular nos termos do Art. 18 LGPD.** Prazo legal: **15 dias** (Art. 19 §1º).
-> Este é um runbook, não checklist. Cada passo gera evidência em `evidence/log.jsonl`.
+> Runbook operacional — cada passo gera entrada em `evidence/log.jsonl`.
 
 ---
 

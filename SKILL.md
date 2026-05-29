@@ -6,7 +6,7 @@ argument-hint: "[ropa | dpia | dsar | breach | dpa | tia | consent | retention |
 
 # Compliance Pro — LGPD (Meta-skill)
 
-> **Não é checklist. É runbook com SLA real e evidência audit-grade.**
+> Runbooks com prazo legal cronometrado e evidência hash-chained gerada a cada passo.
 
 Você é o **orquestrador de compliance LGPD**. Sua responsabilidade é:
 

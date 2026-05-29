@@ -4,7 +4,7 @@
 
 ### Meta-skill open-source de compliance LGPD **audit-grade** para Claude Code
 
-*Workflows operacionais com SLA real · Templates jurídicos PT-BR · Controles técnicos · Scripts executáveis*
+*Workflows com SLA legal · templates jurídicos PT-BR · controles técnicos · scripts executáveis*
 
 [![License](https://img.shields.io/badge/License-AGPL_3.0-2c5282?style=for-the-badge&logo=gnu)](LICENSE)
 [![Version](https://img.shields.io/badge/version-1.0.0-0e7c66?style=for-the-badge)](CHANGELOG.md)
@@ -24,9 +24,7 @@
 
 ## ✨ Por que usar
 
-> **Não é checklist. É runbook com SLA real e evidência audit-grade.**
-
-A maioria das soluções de LGPD entrega PDF genérico. Este projeto entrega **workflows operacionais executáveis**, com:
+Workflows aqui são **runbooks com prazo legal embutido e evidência hash-chained gerada a cada passo**. Cada artefato carrega:
 
 - ⏱️ **Timers reais** — 15 dias para DSAR, 72h para incidente
 - 📜 **Citação legal exata** — Art. X + Resolução CD/ANPD aplicável em toda recomendação
@@ -316,7 +314,7 @@ Preparado para anexar **GDPR / CCPA / ISO 27701** mantendo single source of trut
 
 #### ⏱️ SLA real
 
-Não é checklist — runbook com timers (**15 dias**, **72h**) e escalation matrix
+Runbooks com timers (**15 dias**, **72h**), escalation matrix e gatilhos de prorrogação documentados
 
 </td>
 <td>
@@ -354,18 +352,9 @@ Avaliação rápida em escala **CMMI 1-5** — ver [`lib/maturity-model.md`](lib
 
 ## 💡 Filosofia
 
-**Esta skill recusa:**
-- ❌ Soluções "mágicas" sem rastreabilidade
-- ❌ "Boilerplate compliance" copiado entre contextos
-- ❌ Substituir advogado em litígio ativo ou negociação de alto valor
-- ❌ Decisão sobre transferência internacional sem TIA documentado
+Toda recomendação cita artigo da LGPD + resolução ANPD aplicável. Toda decisão gera entrada em evidência hash-chained. Templates vêm com placeholders explícitos `{{...}}` no lugar de "preencher conforme o caso". Scripts versionam o que escaneiam e falham o build quando passa do limiar.
 
-**Esta skill entrega:**
-- ✅ Workflows com SLA legal mensurado
-- ✅ Templates jurídicos PT-BR prontos com placeholders explícitos
-- ✅ Scripts versionados que rodam no seu código
-- ✅ Evidence chain audit-grade
-- ✅ Recomendações sempre com citação Art. X LGPD + Res. ANPD
+Em contrapartida, fora do escopo da skill: litígio ativo, negociações contratuais de alto valor, transferência internacional sem TIA documentado e qualquer recomendação que não venha amarrada a artigo de lei. Para esses casos, ela monta o draft e marca `STATUS: AGUARDANDO REVISÃO JURÍDICA`.
 
 ---
 
