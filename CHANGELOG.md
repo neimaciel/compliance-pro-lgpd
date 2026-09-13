@@ -4,6 +4,21 @@ Todas as mudanças notáveis neste projeto serão documentadas aqui.
 
 Segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e [SemVer](https://semver.org/lang/pt-BR/).
 
+## [1.0.1] — 2026-09-13
+
+### Corrigido
+- **CI**: o workflow era recusado antes de criar qualquer job, porque `hashFiles()` não é aceito no `if` de job. Nenhuma execução tinha rodado desde o lançamento.
+- **pii-scan**: as exclusões comparavam o caminho absoluto. Um projeto dentro de `tmp/`, `build/`, `vendor/`, `dist/` ou `target/` era pulado inteiro e o scan passava com 0 arquivos. Agora só conta o caminho dentro do alvo.
+- **pii-scan**: nenhum arquivo examinado agora gera aviso e sai com código 3 quando `--fail-on` está ligado. Antes, um alvo errado passava em silêncio.
+- **pii-scan**: a detecção de fixture (test, sample, fake...) também olhava o caminho absoluto.
+- **pyproject**: removido o comando `encryption-check`, que apontava para um módulo inexistente.
+- **CI / dep-scan**: apontava para um `package.json` inexistente na raiz. Agora examina o de `scripts/typescript`.
+- **tls-checker.ts**: erro de tipo em `certIssuer` (nos tipos atuais do Node, `O`/`CN` podem vir como lista).
+
+### Adicionado
+- Testes (pytest) dos scanners Python: validadores, exclusões, fixtures, cadeia de evidência, logs `.gz` e schema SQL.
+- Jobs de testes e de checagem de tipos TypeScript no CI.
+
 ## [1.0.0] — 2026-05-28
 
 ### Adicionado

@@ -1,7 +1,7 @@
 [project]
 name = "compliance-pro-lgpd"
-version = "1.0.0"
-description = "Compliance Pro — LGPD auditing scripts (PII scanner, retention scanner, log scanner, encryption checker)"
+version = "1.0.1"
+description = "Compliance Pro — LGPD auditing scripts (PII scanner, retention scanner, log scanner, audit log integrity)"
 authors = [{name = "Nei Maciel", email = "nei@ampler.me"}]
 license = {text = "AGPL-3.0-only"}
 readme = "README.md"
@@ -26,7 +26,6 @@ compliance-scan = "compliance_pro.cli:main"
 pii-scan = "compliance_pro.pii_scanner:cli"
 retention-scan = "compliance_pro.retention_scanner:cli"
 log-scan = "compliance_pro.log_scanner:cli"
-encryption-check = "compliance_pro.encryption_checker:cli"
 audit-integrity = "compliance_pro.audit_log_integrity:cli"
 
 [build-system]

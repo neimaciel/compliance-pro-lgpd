@@ -79,7 +79,9 @@ function inspect(host: string, port: number, timeoutMs = 10_000): Promise<TlsRep
         cipher: cipher?.name ?? null,
         authorized: socket.authorized,
         authorizationError: authError,
-        certIssuer: typeof cert.issuer === "object" ? cert.issuer.O ?? cert.issuer.CN ?? null : null,
+        certIssuer: typeof cert.issuer === "object"
+          ? (() => { const v = cert.issuer.O ?? cert.issuer.CN; return (Array.isArray(v) ? v[0] : v) ?? null; })()
+          : null,   // nos tipos atuais do Node, O/CN podem vir como string[]
         certValidFrom: cert.valid_from ?? null,
         certValidTo: cert.valid_to ?? null,
         daysToExpiry,

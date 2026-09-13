@@ -70,8 +70,11 @@ def redact(value: str) -> str:
     return value[:3] + "*" * (len(value) - 6) + value[-3:]
 
 
-def should_skip(path: Path, excludes: set[str]) -> bool:
-    parts = set(path.parts)
+def should_skip(path: Path, excludes: set[str], root: Path | None = None) -> bool:
+    # Compara só as pastas DENTRO do alvo. Com o caminho absoluto, um projeto que mora
+    # em /tmp, build/, vendor/ etc. era pulado inteiro e o scan "passava" com 0 arquivos.
+    rel = path.relative_to(root) if root is not None else path
+    parts = set(rel.parts)
     if parts & excludes:
         return True
     if path.suffix and path.suffix not in TEXT_EXTENSIONS:
@@ -81,7 +84,7 @@ def should_skip(path: Path, excludes: set[str]) -> bool:
 
 def iter_files(root: Path, excludes: set[str]) -> Iterator[Path]:
     for p in root.rglob("*"):
-        if p.is_file() and not should_skip(p, excludes):
+        if p.is_file() and not should_skip(p, excludes, root):
             yield p
 
 
@@ -159,7 +162,7 @@ def cli(
     files_scanned = 0
     for fp in iter_files(root, excludes):
         files_scanned += 1
-        is_test = bool(TEST_FILE_HINTS.search(str(fp)))
+        is_test = bool(TEST_FILE_HINTS.search(str(fp.relative_to(root))))  # só o caminho dentro do alvo
         for f in scan_file(fp, patterns, is_test=is_test):
             if severity_order.index(f.severity) < min_idx:
                 continue
@@ -211,6 +214,12 @@ def cli(
         }, indent=2, ensure_ascii=False))
         if not quiet:
             console.print(f"[green]Report written:[/] {report}")
+
+    if files_scanned == 0:
+        # nada examinado não é aprovação: sem isto, um alvo errado passava no CI em silêncio
+        console.print("[yellow bold]AVISO[/]: nenhum arquivo examinado. Confira --target e --exclude.")
+        if fail_on:
+            sys.exit(3)
 
     if fail_on:
         fail_idx = severity_order.index(fail_on)

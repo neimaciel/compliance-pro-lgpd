@@ -7,7 +7,23 @@ on:
   schedule:
     - cron: "0 9 * * 1"   # Segunda-feira 9h UTC — auditoria semanal
 
+# hashFiles() não existe no `if` de job: usar ali fazia o GitHub recusar o workflow
+# inteiro antes de criar qualquer job (nenhuma execução rodou até a v1.0.1).
+
 jobs:
+  tests:
+    name: Testes dos scanners
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: pip install -e "scripts/python[dev]"
+      - name: Pytest
+        run: pytest -q scripts/python/tests
+
   pii-scan:
     name: PII Scanner
     runs-on: ubuntu-latest
@@ -17,11 +33,13 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install
-        run: |
-          cd scripts/python
-          pip install -e .
+        run: pip install -e scripts/python
       - name: Run scan
-        run: pii-scan --target . --report pii-report.json --fail-on critical
+        # gate no CÓDIGO: a documentação de LGPD cita as categorias sensíveis (Art. 11) de propósito,
+        # e patterns.py / retention_scanner.py contêm as próprias palavras como regra de busca
+        run: >-
+          pii-scan --target scripts --report pii-report.json --fail-on high --quiet
+          --exclude patterns.py --exclude retention_scanner.py --exclude README.md --exclude compliance_pro_lgpd.egg-info --exclude node_modules
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@v4
@@ -29,23 +47,25 @@ jobs:
           name: pii-report
           path: pii-report.json
 
-  dependency-scan:
-    name: Dependency Scanner
+  typescript:
+    name: TypeScript (tipos + dependências)
     runs-on: ubuntu-latest
-    if: hashFiles('package.json') != ''
+    env:
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"   # cookie-check não roda no CI
+    defaults:
+      run:
+        working-directory: scripts/typescript
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
       - name: Install
-        run: |
-          cd scripts/typescript
-          npm install
-      - name: Run scan
-        run: |
-          cd scripts/typescript
-          npx tsx src/dependency-scanner.ts --pkg ../../package.json --report dep-report.json
+        run: npm install --no-audit --no-fund
+      - name: Typecheck
+        run: npx tsc --noEmit -p tsconfig.json
+      - name: Dependency scan
+        run: npx tsx src/dependency-scanner.ts --pkg ./package.json --report dep-report.json
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@v4
@@ -56,15 +76,17 @@ jobs:
   evidence-integrity:
     name: Evidence Chain Integrity
     runs-on: ubuntu-latest
-    if: hashFiles('evidence/log.jsonl') != ''
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - name: Install
-        run: |
-          cd scripts/python
-          pip install -e .
+        run: pip install -e scripts/python
       - name: Verify chain
-        run: audit-integrity verify --file evidence/log.jsonl
+        run: |
+          if [ -f evidence/log.jsonl ]; then
+            audit-integrity verify --file evidence/log.jsonl
+          else
+            echo "Sem evidence/log.jsonl: nada a verificar."
+          fi
