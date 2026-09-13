@@ -1,6 +1,6 @@
 {
   "name": "@compliance-pro/lgpd",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Compliance Pro LGPD — TypeScript audit scripts (cookie checker, TLS checker, dependency scanner)",
   "license": "AGPL-3.0-only",
   "type": "module",

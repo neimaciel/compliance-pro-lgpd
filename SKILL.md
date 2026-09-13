@@ -143,7 +143,7 @@ Nesses casos: **gera o draft + lista os pontos que exigem revisão jurídica**, 
 
 ## Versão & roadmap
 
-- **v1.0.0** — LGPD completo, scripts Python+TS, modo adaptativo
+- **v1.0.1** — LGPD completo, scripts Python+TS, modo adaptativo
 - **v1.1** (próxima) — Anexar GDPR + UK GDPR via crosswalk (reuso ~70% dos controles)
 - **v1.2** — CCPA/CPRA + state laws (CO, VA, CT, UT)
 - **v2.0** — ISO 27701 + SOC 2 + EU AI Act
